@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block title %}Xác thực - Học toán cùng Hoàng Minh{% endblock %}
+{% block tagline %}Đăng nhập hoặc đăng ký để truy cập{% endblock %}
+{% set active_auth = active_tab %}
+
+
+{% block content %}
+<section class="card auth-card">
+  <div class="subtabs-wrap">
+    <div class="subtabs">
+      <a class="subtab {% if active_tab=='login' %}is-active{% endif %}" href="{{ url_for('login') }}">Đăng nhập</a>
+      <a class="subtab {% if active_tab=='register' %}is-active{% endif %}" href="{{ url_for('register') }}">Đăng ký</a>
+    </div>
+  </div>
+
+  {% if active_tab == 'login' %}
+    <h1>Đăng nhập</h1>
+    <form class="form" method="post" action="{{ url_for('login_post') }}">
+      <label class="field">
+        <span>Tên đăng nhập</span>
+        <input name="username" required autocomplete="username" />
+      </label>
+      <label class="field">
+        <span>Mật khẩu</span>
+        <input name="password" type="password" required autocomplete="current-password" />
+      </label>
+      <button class="btn" type="submit">Đăng nhập</button>
+    </form>
+  {% else %}
+    <h1>Đăng ký</h1>
+    <form class="form" method="post" action="{{ url_for('register_post') }}">
+      <label class="field">
+        <span>Họ và tên</span>
+        <input name="full_name" required />
+      </label>
+      <label class="field">
+        <span>Tên đăng nhập</span>
+        <input name="username" required autocomplete="username" />
+      </label>
+      <label class="field">
+        <span>Mật khẩu</span>
+        <input name="password" type="password" required autocomplete="new-password" />
+      </label>
+      <label class="field">
+        <span>Nhập lại mật khẩu</span>
+        <input name="confirm" type="password" required autocomplete="new-password" />
+      </label>
+      <button class="btn" type="submit">Tạo tài khoản</button>
+    </form>
+  {% endif %}
+</section>
+{% endblock %}

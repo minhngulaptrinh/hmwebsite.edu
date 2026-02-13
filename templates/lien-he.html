@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}Học toán cùng Hoàng Minh - Liên hệ{% endblock %}
+{% set active = 'lien_he' %}
+{% block tagline %}Thông tin giảng viên{% endblock %}
+
+{% block content %}
+<section class="card">
+  <h1>Thông tin giảng viên</h1>
+  <p class="muted">Hãy liên hệ khi cần sự giúp đỡ.</p>
+
+  <div class="teacher">
+    <div class="avatar" aria-hidden="true">HM</div>
+    <div>
+      <div class="teacher__name">Hoàng Minh</div>
+      <div class="muted">Giảng viên Toán • Dạy từ tâm</div>
+    </div>
+  </div>
+
+  <div class="info">
+    <div class="info__item">
+      <div class="label">Email</div>
+      <div class="value">minh91771@gmail.com</div>
+    </div>
+    <div class="info__item">
+      <div class="label">Số điện thoại / Zalo</div>
+      <div class="value">0822044906</div>
+    </div>
+    <div class="info__item">
+      <div class="label">Facebook</div>
+      <div class="value">facebook.com/minhh.phan126</div>
+    </div>
+    <div class="info__item">
+      <div class="label">Thời gian hỗ trợ</div>
+      <div class="value">Mọi lúc.</div>
+    </div>
+  </div>
+</section>
+{% endblock %}

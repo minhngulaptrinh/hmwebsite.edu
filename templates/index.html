@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+{% block title %}Học toán cùng Hoàng Minh - Trang chủ{% endblock %}
+{% set active = 'home' %}
+
+{% block content %}
+<section class="hero card">
+  <h1>Học toán cùng Hoàng Minh</h1>
+  <p class="muted">
+    Chào mừng bạn đến với trang giới thiệu khóa học Toán online. Tại đây bạn có thể xem thông tin khóa học và thông tin giảng viên.
+  </p>
+
+  <div class="cta">
+    <a class="btn" href="{{ url_for('khoa_hoc') }}">Xem khóa học</a>
+    <a class="btn btn--ghost" href="{{ url_for('lien_he') }}">Gặp giảng viên</a>
+  </div>
+</section>
+
+<section class="teacher-section card reveal">
+  <div class="teacher-layout">
+    <div class="teacher-photo">
+      <img
+        src="{{ url_for('static', filename='teacher.jpg') }}"
+        alt="Ảnh giảng viên Hoàng Minh"
+        loading="lazy"
+        onerror="this.style.display='none'; this.parentElement.classList.add('no-image');"
+      />
+      <div class="no-image-placeholder" aria-hidden="true"></div>
+    </div>
+
+    <div class="teacher-content">
+      <h2>Giảng viên: Hoàng Minh</h2>
+      <p class="muted">
+        (Demo) (Bịa ra cho vui chớ làm gì có thật) Lộ trình rõ ràng, ưu tiên tư duy nền tảng, luyện kỹ năng giải nhanh và tối ưu điểm theo mục tiêu.
+      </p>
+
+      <ul class="achievements">
+        <li>10+ năm kinh nghiệm dạy Toán THPT và ôn thi theo chuyên đề (demo).</li>
+        <li>Đã đồng hành 2.000+ học viên online, xây dựng lộ trình cá nhân theo năng lực (demo).</li>
+        <li>Thiết kế 120+ bộ đề luyện theo mức độ, phân tầng rõ ràng từ cơ bản đến nâng cao (demo).</li>
+        <li>Hơn 500+ buổi live chữa bài, tập trung “tư duy + kỹ năng + tốc độ” (demo).</li>
+        <li>Quy trình sửa lỗi sai: checklist lỗi thường gặp + bài tập bù lỗ hổng theo tuần (demo).</li>
+        <li>Tài liệu gọn: tóm tắt công thức, kỹ thuật biến đổi, chiến lược phân bổ thời gian khi làm bài (demo).</li>
+        <li>Hỗ trợ hỏi đáp sau buổi học, theo dõi tiến độ và nhắc mục tiêu định kỳ (demo).</li>
+      </ul>
+
+      <div class="cta">
+        <a class="btn" href="{{ url_for('khoa_hoc') }}">Xem thông tin khóa học</a>
+        <a class="btn btn--ghost" href="{{ url_for('lien_he') }}">Liên hệ giảng viên</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="grid">
+  <article class="card">
+    <h2>Học theo lộ trình</h2>
+    <p class="muted">Chia nhỏ kiến thức theo từng chặng, học đến đâu chắc đến đó.</p>
+  </article>
+  <article class="card">
+    <h2>Bài tập & chữa bài</h2>
+    <p class="muted">Có bài luyện tập sau mỗi phần và hướng dẫn giải rõ ràng.</p>
+  </article>
+  <article class="card">
+    <h2>Học mọi lúc</h2>
+    <p class="muted">Tài liệu gọn gàng, truy cập dễ trên điện thoại và máy tính.</p>
+  </article>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  const reveals = document.querySelectorAll(".reveal");
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add("is-visible");
+        io.unobserve(entry.target);
+      }
+    }); 
+  }, { threshold: 0.18 });
+  reveals.forEach((el) => io.observe(el));
+</script>
+{% endblock %}

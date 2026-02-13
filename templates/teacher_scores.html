@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% block title %}Nhập điểm - Học toán cùng Hoàng Minh{% endblock %}
+{% block tagline %}Quản trị điểm số{% endblock %}
+
+{% block content %}
+<section class="card">
+  <h1>Nhập điểm</h1>
+  <p class="muted">Chỉ tài khoản admin mới truy cập được trang này.</p>
+
+  <form class="form" method="post" action="{{ url_for('teacher_scores_post') }}">
+    <label class="field">
+      <span>Khóa học</span>
+      <select name="course_slug" required>
+        {% for c in courses %}
+          <option value="{{ c['slug'] }}">{{ c['title'] }}</option>
+        {% endfor %}
+      </select>
+    </label>
+
+    <label class="field">
+      <span>Username học sinh</span>
+      <input name="username" required placeholder="vd: abc1234" />
+    </label>
+
+    <label class="field">
+      <span>Tên bài / Bài kiểm tra</span>
+      <input name="assignment" required placeholder="vd: Bài 1 - Hàm số" />
+    </label>
+
+    <div class="grid-2">
+      <label class="field">
+        <span>Điểm</span>
+        <input name="score" required placeholder="vd: 8.5" />
+      </label>
+      <label class="field">
+        <span>Điểm tối đa</span>
+        <input name="max_score" required placeholder="vd: 10" />
+      </label>
+    </div>
+
+    <label class="field">
+      <span>Ghi chú (tuỳ chọn)</span>
+      <input name="note" placeholder="vd: Sai câu 3, cần xem lại dạng..." />
+    </label>
+
+    <button class="btn" type="submit">Lưu điểm</button>
+  </form>
+</section>
+
+<section class="card" style="margin-top:14px;">
+  <h2>Gần đây</h2>
+  <div class="score-table-wrap">
+    <table class="score-table">
+      <thead>
+        <tr>
+          <th>Khóa</th>
+          <th>Username</th>
+          <th>Bài</th>
+          <th>Điểm</th>
+          <th>Tối đa</th>
+          <th>Ghi chú</th>
+          <th>Thời gian</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for r in recent %}
+          <tr>
+            <td>{{ r["course_slug"] }}</td>
+            <td>{{ r["username"] }}</td>
+            <td>{{ r["assignment"] }}</td>
+            <td>{{ r["score"] }}</td>
+            <td>{{ r["max_score"] }}</td>
+            <td>{{ r["note"] }}</td>
+            <td>{{ r["graded_at"] }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+{% endblock %}

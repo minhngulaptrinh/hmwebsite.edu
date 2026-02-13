@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+{% block title %}Khóa học - Học toán cùng Hoàng Minh{% endblock %}
+{% set active = 'khoa_hoc' %}
+{% block tagline %}Danh sách khóa học{% endblock %}
+
+{% block content %}
+<section class="card">
+  <h1>Khóa học</h1>
+  <p class="muted">Nếu khóa học chưa có ai đăng ký, bạn có thể nhập mã để mở khóa.</p>
+
+  <div class="course-grid">
+    {% for c in courses %}
+      {% if c.state == 'mine' %}
+        <a class="course-card" href="{{ url_for('course_page', slug=c.slug) }}">
+          <div class="course-card__label">Phần</div>
+          <div class="course-card__value">{{ c.title }}</div>
+          <div class="course-card__status is-open">Đã mở khóa</div>
+        </a>
+
+      {% else %}
+        <a class="course-card is-locked" href="#"
+           data-slug="{{ c.slug }}"
+           data-title="{{ c.title }}">
+          <div class="course-card__label">Phần</div>
+          <div class="course-card__value">{{ c.title }}</div>
+          <div class="course-card__status is-locked">Nhập mã để mở khóa</div>
+        </a>
+      {% endif %}
+    {% endfor %}
+  </div>
+</section>
+
+<div class="modal" id="unlockModal" aria-hidden="true">
+  <div class="modal__backdrop" data-close></div>
+  <div class="modal__panel card" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <h2 id="modalTitle">Nhập mã nhập học</h2>
+    <p class="muted">Nhập mã do giáo viên cung cấp để mở khóa.</p>
+
+    <div class="modal__error" id="modalError" style="display:none;"></div>
+
+    <form id="unlockForm" class="form">
+      <input type="hidden" id="courseSlug" />
+      <label class="field">
+        <span>Mã nhập học</span>
+        <input id="courseCode" required placeholder="vd: abcxyz123456" />
+      </label>
+
+      <div class="cta">
+        <button class="btn" type="submit">Mở khóa</button>
+        <button class="btn btn--ghost" type="button" data-close>Hủy</button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  const modal = document.getElementById("unlockModal");
+  const modalTitle = document.getElementById("modalTitle");
+  const modalError = document.getElementById("modalError");
+  const unlockForm = document.getElementById("unlockForm");
+  const courseSlugInput = document.getElementById("courseSlug");
+  const courseCodeInput = document.getElementById("courseCode");
+
+  function openModal(slug, title) {
+    modalError.style.display = "none";
+    modalError.textContent = "";
+    modalTitle.textContent = `Nhập mã nhập học: ${title}`;
+    courseSlugInput.value = slug;
+    courseCodeInput.value = "";
+    modal.classList.add("is-open");
+    modal.setAttribute("aria-hidden", "false");
+    setTimeout(() => courseCodeInput.focus(), 50);
+  }
+  function closeModal() {
+    modal.classList.remove("is-open");
+    modal.setAttribute("aria-hidden", "true");
+  }
+  document.querySelectorAll("[data-close]").forEach((el) => el.addEventListener("click", closeModal));
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && modal.classList.contains("is-open")) closeModal();
+  });
+
+  document.querySelectorAll(".course-card.is-locked").forEach((card) => {
+    card.addEventListener("click", (e) => {
+      e.preventDefault();
+      openModal(card.dataset.slug, card.dataset.title);
+    });
+  });
+
+  unlockForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    modalError.style.display = "none";
+    modalError.textContent = "";
+
+    const slug = courseSlugInput.value;
+    const code = courseCodeInput.value.trim();
+
+    const res = await fetch(`/unlock/${encodeURIComponent(slug)}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ code })
+    });
+
+    const data = await res.json();
+    if (!data.ok) {
+      modalError.style.display = "block";
+      modalError.textContent = data.message || "Không mở khóa được.";
+      return;
+    }
+    window.location.href = data.redirect;
+  });
+</script>
+{% endblock %}

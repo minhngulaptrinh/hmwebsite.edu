@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+{% block title %}{{ course_title }} - Học toán cùng Hoàng Minh{% endblock %}
+{% set active = 'khoa_hoc' %}
+{% block tagline %}{{ course_title }}{% endblock %}
+
+{% block content %}
+<div class="subtabs-wrap">
+  <div class="subtabs">
+    <button class="subtab is-active" type="button" data-pane="pane-course">Khóa học</button>
+    <button class="subtab" type="button" data-pane="pane-score">Điểm số</button>
+  </div>
+</div>
+
+<section id="pane-course" class="pane is-active">
+  <div class="card">
+    <div class="pane-head">
+      <h1 style="margin:0;">{{ course_title }}</h1>
+      <button class="linklike" type="button" id="collapseAll">Thu gọn toàn bộ</button>
+    </div>
+
+    <div class="accordion-list">
+      {% for sec in sections %}
+        <div class="acc">
+          <button class="acc__head" type="button" aria-expanded="false">
+            <span class="acc__icon" aria-hidden="true">›</span>
+            <span class="acc__title">{{ sec["title"] }}</span>
+          </button>
+
+          <div class="acc__body" hidden>
+            <div class="file-list">
+              {% for it in sec["items"] %}
+                <a class="file-item" href="{{ it.url }}" target="_blank" rel="noopener">
+                  <span class="file-ico" aria-hidden="true">PDF</span>
+                  <span class="file-name">{{ it["label"] }}</span>
+                </a>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+
+  </div>
+</section>
+
+<section id="pane-score" class="pane">
+  <div class="card">
+    <h2>Điểm số</h2>
+
+    {% if scores and scores|length > 0 %}
+      <div class="score-table-wrap">
+        <table class="score-table">
+          <thead>
+            <tr>
+              <th>Bài</th>
+              <th>Điểm</th>
+              <th>Tối đa</th>
+              <th>Ghi chú</th>
+              <th>Thời gian</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for s in scores %}
+              <tr>
+                <td>{{ s["assignment"] }}</td>
+                <td>{{ s["score"] }}</td>
+                <td>{{ s["max_score"] }}</td>
+                <td>{{ s["note"] }}</td>
+                <td>{{ s["graded_at"] }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      <p class="muted">Chưa có điểm nào được cập nhật.</p>
+    {% endif %}
+  </div>
+</section>
+
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+  // Subtabs
+  const subTabs = document.querySelectorAll(".subtab");
+  const panes = document.querySelectorAll(".pane");
+  subTabs.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      subTabs.forEach(b => b.classList.remove("is-active"));
+      btn.classList.add("is-active");
+      panes.forEach(p => p.classList.remove("is-active"));
+      document.getElementById(btn.dataset.pane).classList.add("is-active");
+    });
+  });
+
+  // Accordion
+  function setAccState(head, open) {
+    const body = head.parentElement.querySelector(".acc__body");
+    head.setAttribute("aria-expanded", open ? "true" : "false");
+    if (open) body.hidden = false;
+    else body.hidden = true;
+  }
+
+  document.querySelectorAll(".acc__head").forEach((head) => {
+    head.addEventListener("click", () => {
+      const isOpen = head.getAttribute("aria-expanded") === "true";
+      setAccState(head, !isOpen);
+    });
+  });
+
+  // Collapse all
+  document.getElementById("collapseAll").addEventListener("click", () => {
+    document.querySelectorAll(".acc__head").forEach((head) => setAccState(head, false));
+  });
+</script>
+{% endblock %}

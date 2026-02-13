@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{% block title %}Học toán cùng Hoàng Minh{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}" />
+  {% block head %}{% endblock %}
+</head>
+{% if is_admin() %}
+  <a class="tab {% if active=='teacher_scores' %}is-active{% endif %}" href="{{ url_for('teacher_scores') }}">Nhập điểm</a>
+{% endif %}
+
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand__logo">HM</div>
+      <div class="brand__text">
+        <div class="brand__name">Học toán cùng Hoàng Minh</div>
+        <div class="brand__tagline">{% block tagline %}Khóa học Toán online — học dễ hiểu, có lộ trình{% endblock %}</div>
+      </div>
+    </div>
+
+    <nav class="tabs" aria-label="Điều hướng">
+        {% if session.get('username') %}
+    <a class="tab {% if active=='home' %}is-active{% endif %}" href="{{ url_for('home') }}">Trang chủ</a>
+    <a class="tab {% if active=='khoa_hoc' %}is-active{% endif %}" href="{{ url_for('khoa_hoc') }}">Khóa học</a>
+    <a class="tab {% if active=='lien_he' %}is-active{% endif %}" href="{{ url_for('lien_he') }}">Liên hệ</a>
+
+    {% if session.get('username') in ADMIN_USERS %}
+    <a class="tab {% if active=='teacher_scores' %}is-active{% endif %}" href="{{ url_for('teacher_scores') }}">Nhập điểm</a>
+    {% endif %}
+
+    <span class="tab tab--user" title="Tài khoản">{{ session.get('username') }}</span>
+    <a class="tab tab--danger" href="{{ url_for('logout') }}">Đăng xuất</a>
+        {% else %}
+    <a class="tab {% if active_auth=='login' %}is-active{% endif %}" href="{{ url_for('login') }}">Đăng nhập</a>
+    <a class="tab {% if active_auth=='register' %}is-active{% endif %}" href="{{ url_for('register') }}">Đăng ký</a>
+        {% endif %}
+    </nav>
+
+  </header>
+
+  <main class="container">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div class="flash-wrap">
+          {% for category, msg in messages %}
+            <div class="flash flash--{{ category }}">{{ msg }}</div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="footer">
+    <div> <span id="y"></span> Học toán cùng Hoàng Minh</div>
+  </footer>
+
+  <script>
+    document.getElementById("y").textContent = new Date().getFullYear();
+  </script>
+
+  {% block scripts %}{% endblock %}
+</body>
+</html>
